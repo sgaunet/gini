@@ -24,7 +24,8 @@ var getCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		// Classic read of values, default section can be represented as empty string
-		fmt.Println(cfg.Section(section).Key(key).String())
+		if cfg.Section(section).HasKey(key) {
+			fmt.Println(cfg.Section(section).Key(key).String())
+		}
 	},
 }
