@@ -5,7 +5,7 @@ testcases:
 - name: clean working files
   steps:
   - type: exec
-    script: rm test2.ini
+    script: rm test2.ini || exit 0
     
 - name: get value of key (no section)
   steps:
@@ -56,6 +56,41 @@ testcases:
     # info: "result.systemout is {{.result.systemout}}"
     assertions:
     - result.code ShouldEqual 0
+
+- name: delete a key/value 
+  steps:
+  - type: exec
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/test2.ini del --k key 
+    # info: "result.systemout is {{.result.systemout}}"
+    assertions:
+    - result.code ShouldEqual 0
+
+- name: get value of key not present
+  steps:
+  - type: exec
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/test2.ini get --k key
+    info: "result.systemout is {{.result.systemout}}"
+    assertions:
+    - result.code ShouldEqual 0
+    - result.systemout ShouldBeEmpty
+
+- name: delete a key/value 
+  steps:
+  - type: exec
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/test2.ini del --k key2 --s section
+    # info: "result.systemout is {{.result.systemout}}"
+    assertions:
+    - result.code ShouldEqual 0
+
+- name: get value of key not present
+  steps:
+  - type: exec
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/test2.ini get --k key2 --s section
+    info: "result.systemout is {{.result.systemout}}"
+    assertions:
+    - result.code ShouldEqual 0
+    - result.systemout ShouldBeEmpty
+
 
 - name: clean working files
   steps:

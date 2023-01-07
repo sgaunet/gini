@@ -38,4 +38,5 @@ func init() {
 	setCmd.Flags().StringVar(&value, "v", "", "value to set")
 	setCmd.Flags().BoolVar(&createIniFileIfAbsent, "c", false, "create file if no present")
 	rootCmd.AddCommand(setCmd)
+	rootCmd.AddCommand(delCmd)
 }

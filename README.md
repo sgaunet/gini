@@ -52,7 +52,6 @@ value
 $ gini get --k key2 --i tests/test.ini --s section
 value2
 $ gini get --k keyThatDoNotExists --i tests/test.ini
-
 $ echo $?
 0
 
