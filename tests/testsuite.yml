@@ -1,0 +1,66 @@
+name: Exec testsuite
+
+testcases:
+
+- name: clean working files
+  steps:
+  - type: exec
+    script: rm test2.ini
+    
+- name: get value of key (no section)
+  steps:
+  - type: exec
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/test.ini get --k key
+    info: "result.systemout is {{.result.systemout}}"
+    assertions:
+    - result.code ShouldEqual 0
+    - result.systemout ShouldEqual value
+
+- name: get value of key (section section)
+  steps:
+  - type: exec
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/test.ini get --k key2 --s section
+    info: "result.systemout is {{.result.systemout}}"
+    assertions:
+    - result.code ShouldEqual 0
+    - result.systemout ShouldEqual value2
+
+- name: try to set a key/value to an absent file
+  steps:
+  - type: exec
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/test2.ini set --k key2 --s section --v ok
+    info: "result.systemout is {{.result.systemout}}"
+    assertions:
+    - result.code ShouldEqual 1
+
+- name: set a key/value to an absent file
+  steps:
+  - type: exec
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/test2.ini set --k key2 --s section --v value2 --c
+    # info: "result.systemout is {{.result.systemout}}"
+    assertions:
+    - result.code ShouldEqual 0
+
+- name: set a key/value 
+  steps:
+  - type: exec
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/test2.ini set --k key --v value
+    # info: "result.systemout is {{.result.systemout}}"
+    assertions:
+    - result.code ShouldEqual 0
+
+- name: compare two ini files
+  steps:
+  - type: exec
+    script: diff -q test.ini test2.ini
+    # info: "result.systemout is {{.result.systemout}}"
+    assertions:
+    - result.code ShouldEqual 0
+
+- name: clean working files
+  steps:
+  - type: exec
+    script: rm test2.ini
+    # info: "result.systemout is {{.result.systemout}}"
+    assertions:
+    - result.code ShouldEqual 0
