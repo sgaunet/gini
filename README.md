@@ -54,9 +54,28 @@ value2
 $ gini get --k keyThatDoNotExists --i tests/test.ini
 $ echo $?
 0
-
 ```
 
+# Install
+
+## Option 1
+
+* Download the release
+* Install the binary in /usr/local/bin 
+
+## Option 2: with asdf
+
+```
+asdf plugin-add gini https://github.com/sgaunet/asdf-gini.git
+asdf install gini latest
+```
+
+## Option 3: With brew
+
+```
+brew tap sgaunet/tools
+brew install mdtohtml
+```
 
 # Development
 
@@ -68,6 +87,7 @@ This project is using :
 * [docker buildx](https://github.com/docker/buildx)
 * docker manifest
 * [goreleaser](https://goreleaser.com/)
+* [Principle package of the CLI](https://pkg.go.dev/gopkg.in/ini.v1?utm_source=godoc)
 
 The docker image is only created to simplify the copy of gini in another docker image.
 
