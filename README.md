@@ -10,6 +10,8 @@ Usage:
 
 Available Commands:
   completion  Generate the autocompletion script for the specified shell
+  del         delete a key from an ini file
+  delsection  delete all keys of a section
   get         retrieve a key from an ini file
   help        Help about any command
   set         add/update key/value

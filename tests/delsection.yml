@@ -1,0 +1,54 @@
+name: Exec testsuite
+
+testcases:
+
+- name: prepare file
+  steps:
+  - type: exec
+    script: |
+      cp test2.ini.ori test2.ini
+    # info: "result.systemout is {{.result.systemout}}"
+    assertions:
+    - result.code ShouldEqual 0
+    - result.systemout ShouldBeBlank
+
+- name: delete default section
+  steps:
+  - type: exec
+    script: |
+      cd {{.venom.testsuite.workdir}}/..
+      go run . --i tests/test2.ini delsection
+    # info: "result.systemout is {{.result.systemout}}"
+    assertions:
+    - result.code ShouldEqual 0
+    - result.systemout ShouldBeBlank
+
+- name: delete section named section
+  steps:
+  - type: exec
+    script: |
+      cd {{.venom.testsuite.workdir}}/..
+      go run . --i tests/test2.ini delsection --s section
+    # info: "result.systemout is {{.result.systemout}}"
+    assertions:
+    - result.code ShouldEqual 0
+    - result.systemout ShouldBeBlank
+
+- name: result file should be empty
+  steps:
+  - type: exec
+    script: |
+      cat test2.ini
+    # info: "result.systemout is {{.result.systemout}}"
+    assertions:
+    - result.code ShouldEqual 0
+    - result.systemout ShouldBeBlank
+
+- name: clean working file
+  steps:
+  - type: exec
+    script: |
+      rm test2.ini
+    # info: "result.systemout is {{.result.systemout}}"
+    assertions:
+    - result.code ShouldEqual 0

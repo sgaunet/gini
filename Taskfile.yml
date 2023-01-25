@@ -29,5 +29,6 @@ tasks:
     dir: tests
     cmds:
       - venom run testsuite.yml --output-dir="log" --stop-on-failure
+      - venom run delsection.yml --output-dir="log" --stop-on-failure
 
     
