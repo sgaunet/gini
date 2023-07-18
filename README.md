@@ -76,7 +76,7 @@ asdf install gini latest
 
 ```
 brew tap sgaunet/tools
-brew install mdtohtml
+brew install gini
 ```
 
 # Development
