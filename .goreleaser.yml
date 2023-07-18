@@ -6,6 +6,7 @@ builds:
       - CGO_ENABLED=0
     ldflags:
       - -X github.com/sgaunet/gini/cmd.version={{.Version}}
+      - -s -w
     goos:
       - linux
       - darwin
