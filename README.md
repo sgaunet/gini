@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/sgaunet/gini)](https://goreportcard.com/report/github.com/sgaunet/gini)
+
 # gini
 
 gini is a utility to make some basic operations on ini files.
