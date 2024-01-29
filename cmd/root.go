@@ -29,6 +29,7 @@ func Execute() {
 }
 
 func init() {
+	rootCmd.CompletionOptions.DisableDefaultCmd = true
 	rootCmd.PersistentFlags().StringVar(&iniFile, "i", "", "init file to read/update")
 	rootCmd.PersistentFlags().StringVar(&key, "k", "", "key to read or update")
 	rootCmd.PersistentFlags().StringVar(&section, "s", "", "section of ini file (can be empty)")
