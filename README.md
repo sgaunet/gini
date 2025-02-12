@@ -76,8 +76,8 @@ asdf install gini latest
 ## Option 3: With brew
 
 ```
-brew tap sgaunet/tools
-brew install gini
+brew tap sgaunet/homebrew-tools
+brew install sgaunet/tools/gini
 ```
 
 # Development
