@@ -11,7 +11,7 @@ var section string
 var key string
 var createIniFileIfAbsent bool
 
-// rootCmd represents the base command when called without any subcommands
+// rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:   "gini",
 	Short: "Tool to get/set key from an ini file.",
@@ -21,6 +21,7 @@ var rootCmd = &cobra.Command{
 	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
+// Execute adds all child commands to the root command and sets flags appropriately.
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {

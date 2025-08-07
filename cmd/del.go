@@ -1,3 +1,4 @@
+// Package cmd contains all CLI commands for the gini application.
 package cmd
 
 import (
@@ -8,12 +9,12 @@ import (
 	"gopkg.in/ini.v1"
 )
 
-// delCmd represents the get command
+// delCmd represents the del command.
 var delCmd = &cobra.Command{
 	Use:   "del",
 	Short: "delete a key from an ini file",
 	Long:  `delete a key from an ini file`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		if iniFile == "" {
 			fmt.Fprintln(os.Stderr, "specify inifile")
 			os.Exit(1)

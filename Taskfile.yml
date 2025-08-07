@@ -6,12 +6,15 @@ vars:
 tasks:
   default:
     cmds:
+      - task -a
+
+  build:
+    cmds:
       - CGO_ENABLED=0 go build .
-      - upx -q {{.BINFILE}}
-    # silent: true
-    method: checksum
-    generates:
-      - "{{.BINFILE}}"
+
+  linter:
+    cmds:
+      - golangci-lint run --timeout 5m
 
   snapshot:
     cmds:

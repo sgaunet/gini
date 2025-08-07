@@ -8,12 +8,12 @@ import (
 	"gopkg.in/ini.v1"
 )
 
-// delSectionCmd represents the get command
+// delSectionCmd represents the delsection command.
 var delSectionCmd = &cobra.Command{
 	Use:   "delsection",
 	Short: "delete all keys of a section",
 	Long:  `delete all keys of a section`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		if iniFile == "" {
 			fmt.Fprintln(os.Stderr, "specify inifile")
 			os.Exit(1)
