@@ -8,12 +8,12 @@ import (
 	"gopkg.in/ini.v1"
 )
 
-// getCmd represents the get command
+// getCmd represents the get command.
 var getCmd = &cobra.Command{
 	Use:   "get",
 	Short: "retrieve a key from an ini file",
 	Long:  `retrieve a key from an ini file`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		if iniFile == "" {
 			fmt.Fprintln(os.Stderr, "specify inifile")
 			os.Exit(1)

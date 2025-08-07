@@ -11,12 +11,12 @@ import (
 
 var value string
 
-// setCmd represents the set command
+// setCmd represents the set command.
 var setCmd = &cobra.Command{
 	Use:   "set",
 	Short: "add/update key/value",
 	Long:  `add/update key/value in the desired section (can be empty)`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		if iniFile == "" {
 			fmt.Fprintln(os.Stderr, "specify inifile")
 			os.Exit(1)
