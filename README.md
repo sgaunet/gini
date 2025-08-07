@@ -1,4 +1,11 @@
+[![GitHub release](https://img.shields.io/github/release/sgaunet/gini.svg)](https://github.com/sgaunet/gini/releases/latest)
 [![Go Report Card](https://goreportcard.com/badge/github.com/sgaunet/gini)](https://goreportcard.com/report/github.com/sgaunet/gini)
+![GitHub Downloads](https://img.shields.io/github/downloads/sgaunet/gini/total)
+![Coverage](https://raw.githubusercontent.com/wiki/sgaunet/gini/coverage-badge.svg)
+[![coverage](https://github.com/sgaunet/gini/actions/workflows/coverage.yml/badge.svg)](https://github.com/sgaunet/gini/actions/workflows/coverage.yml)
+[![Snapshot Build](https://github.com/sgaunet/gini/actions/workflows/snapshot.yml/badge.svg)](https://github.com/sgaunet/gini/actions/workflows/snapshot.yml)
+[![Release Build](https://github.com/sgaunet/gini/actions/workflows/release.yml/badge.svg)](https://github.com/sgaunet/gini/actions/workflows/release.yml)
+[![License](https://img.shields.io/github/license/sgaunet/gini.svg)](LICENSE)
 
 # gini
 
