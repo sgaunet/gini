@@ -49,7 +49,7 @@ brews:
       token: '{{ .Env.HOMEBREW_TAP_TOKEN }}'
     url_template: 'https://github.com/sgaunet/gini/releases/download/{{ .Tag }}/{{ .ArtifactName }}'
     install: |
-      bin.install "gini"
+      bin.install "{{ .ArtifactName }}" => "gini"
     test: |
       system "#{bin}/gini", "-h"
 
