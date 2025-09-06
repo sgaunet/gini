@@ -1,4 +1,4 @@
-.task
-dist
+/.task
+/dist
 log
-gini
+/gini
