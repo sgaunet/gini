@@ -3,7 +3,7 @@ module github.com/sgaunet/gini
 go 1.24
 
 require (
-	github.com/spf13/cobra v1.10.1
+	github.com/spf13/cobra v1.10.2
 	gopkg.in/ini.v1 v1.67.0
 )
 
