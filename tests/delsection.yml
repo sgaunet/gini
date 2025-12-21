@@ -1,12 +1,24 @@
 name: Exec testsuite
 
+vars:
+  testfile: "test2-{{.venom.timestamp}}.ini"
+
 testcases:
+
+- name: clean old test files
+  steps:
+  - type: exec
+    script: cd {{.venom.testsuite.workdir}} && rm -f test2-*.ini || exit 0
+    # info: "result.systemout is {{.result.systemout}}"
+    assertions:
+    - result.code ShouldEqual 0
 
 - name: prepare file
   steps:
   - type: exec
     script: |
-      cp test2.ini.ori test2.ini
+      cd {{.venom.testsuite.workdir}}
+      cp test2.ini.ori {{.testfile}}
     # info: "result.systemout is {{.result.systemout}}"
     assertions:
     - result.code ShouldEqual 0
@@ -17,7 +29,7 @@ testcases:
   - type: exec
     script: |
       cd {{.venom.testsuite.workdir}}/..
-      go run . --i tests/test2.ini delsection
+      go run . --i tests/{{.testfile}} delsection
     # info: "result.systemout is {{.result.systemout}}"
     assertions:
     - result.code ShouldEqual 0
@@ -28,7 +40,7 @@ testcases:
   - type: exec
     script: |
       cd {{.venom.testsuite.workdir}}/..
-      go run . --i tests/test2.ini delsection --s section
+      go run . --i tests/{{.testfile}} delsection --s section
     # info: "result.systemout is {{.result.systemout}}"
     assertions:
     - result.code ShouldEqual 0
@@ -38,7 +50,8 @@ testcases:
   steps:
   - type: exec
     script: |
-      cat test2.ini
+      cd {{.venom.testsuite.workdir}}
+      cat {{.testfile}}
     # info: "result.systemout is {{.result.systemout}}"
     assertions:
     - result.code ShouldEqual 0
@@ -47,8 +60,7 @@ testcases:
 - name: clean working file
   steps:
   - type: exec
-    script: |
-      rm test2.ini
+    script: cd {{.venom.testsuite.workdir}} && rm -f {{.testfile}} || exit 0
     # info: "result.systemout is {{.result.systemout}}"
     assertions:
     - result.code ShouldEqual 0
