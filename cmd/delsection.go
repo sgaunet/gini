@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/sgaunet/gini/internal/tools"
 	"github.com/spf13/cobra"
 	"gopkg.in/ini.v1"
 )
@@ -25,7 +26,7 @@ var delSectionCmd = &cobra.Command{
 		// 	cfg.Section(section).DeleteKey(k.Name())
 		// }
 		cfg.DeleteSection(section)
-		err = cfg.SaveTo(iniFile)
+		err = tools.AtomicSave(cfg, iniFile)
 		if err != nil {
 			return fmt.Errorf("fail to save file: %w", err)
 		}
