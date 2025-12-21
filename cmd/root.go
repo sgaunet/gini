@@ -1,9 +1,14 @@
 package cmd
 
 import (
+	"errors"
 	"os"
 
 	"github.com/spf13/cobra"
+)
+
+var (
+	errNoIniFile = errors.New("specify inifile")
 )
 
 var iniFile string
