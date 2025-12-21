@@ -31,7 +31,7 @@ var setCmd = &cobra.Command{
 		}
 		// Classic read of values, default section can be represented as empty string
 		cfg.Section(section).Key(key).SetValue(value)
-		err = cfg.SaveTo(iniFile)
+		err = tools.AtomicSave(cfg, iniFile)
 		if err != nil {
 			return fmt.Errorf("fail to save file: %w", err)
 		}
