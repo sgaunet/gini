@@ -8,15 +8,11 @@ import (
 
 // IsFileExists checks if a file exists and is not a directory.
 func IsFileExists(file string) bool {
-	f, err := os.Open(file) // #nosec G304 - file path is intended to be user-provided
-	if os.IsNotExist(err) {
+	info, err := os.Stat(file)
+	if err != nil {
 		return false
 	}
-	defer func() {
-		_ = f.Close()
-	}()
-	i, _ := os.Stat(file)
-	return !i.IsDir()
+	return !info.IsDir()
 }
 
 // TouchFile creates an empty file at the specified path.
