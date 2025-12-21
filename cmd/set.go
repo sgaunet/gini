@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/sgaunet/gini/internal/tools"
 	"github.com/spf13/cobra"
@@ -16,29 +15,26 @@ var setCmd = &cobra.Command{
 	Use:   "set",
 	Short: "add/update key/value",
 	Long:  `add/update key/value in the desired section (can be empty)`,
-	Run: func(_ *cobra.Command, _ []string) {
+	RunE: func(_ *cobra.Command, _ []string) error {
 		if iniFile == "" {
-			fmt.Fprintln(os.Stderr, "specify inifile")
-			os.Exit(1)
+			return errNoIniFile
 		}
 		if !tools.IsFileExists(iniFile) && createIniFileIfAbsent {
 			err := tools.TouchFile(iniFile)
 			if err != nil {
-				fmt.Fprintln(os.Stderr, "can't create file : %w")
-				os.Exit(1)
+				return fmt.Errorf("can't create file: %w", err)
 			}
 		}
 		cfg, err := ini.Load(iniFile)
 		if err != nil {
-			fmt.Printf("Fail to load file: %v", err)
-			os.Exit(1)
+			return fmt.Errorf("fail to load file: %w", err)
 		}
 		// Classic read of values, default section can be represented as empty string
 		cfg.Section(section).Key(key).SetValue(value)
 		err = cfg.SaveTo(iniFile)
 		if err != nil {
-			fmt.Printf("Fail to save file: %v", err)
-			os.Exit(1)
+			return fmt.Errorf("fail to save file: %w", err)
 		}
+		return nil
 	},
 }
