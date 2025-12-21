@@ -18,6 +18,13 @@ var delCmd = &cobra.Command{
 		if iniFile == "" {
 			return errNoIniFile
 		}
+		if err := tools.ValidateKey(key); err != nil {
+			return fmt.Errorf("invalid key: %w", err)
+		}
+		if err := tools.ValidateSection(section); err != nil {
+			return fmt.Errorf("invalid section: %w", err)
+		}
+
 		cfg, err := ini.Load(iniFile)
 		if err != nil {
 			return fmt.Errorf("fail to load file: %w", err)

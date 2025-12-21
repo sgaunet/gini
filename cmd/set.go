@@ -19,6 +19,13 @@ var setCmd = &cobra.Command{
 		if iniFile == "" {
 			return errNoIniFile
 		}
+		if err := tools.ValidateKey(key); err != nil {
+			return fmt.Errorf("invalid key: %w", err)
+		}
+		if err := tools.ValidateSection(section); err != nil {
+			return fmt.Errorf("invalid section: %w", err)
+		}
+
 		if !tools.IsFileExists(iniFile) && createIniFileIfAbsent {
 			err := tools.TouchFile(iniFile)
 			if err != nil {

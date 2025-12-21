@@ -2,11 +2,28 @@
 package tools
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"gopkg.in/ini.v1"
+)
+
+var (
+	// ErrEmptyKey is returned when a key name is empty.
+	ErrEmptyKey = errors.New("key name cannot be empty")
+	// ErrEmptySection is returned when a section name is empty and required.
+	ErrEmptySection = errors.New("section name cannot be empty")
+	// ErrKeyWhitespace is returned when a key has leading/trailing whitespace.
+	ErrKeyWhitespace = errors.New("key name has leading or trailing whitespace")
+	// ErrKeyInvalidChar is returned when a key contains invalid characters.
+	ErrKeyInvalidChar = errors.New("key name contains invalid character")
+	// ErrSectionWhitespace is returned when a section has leading/trailing whitespace.
+	ErrSectionWhitespace = errors.New("section name has leading or trailing whitespace")
+	// ErrSectionInvalidChar is returned when a section contains invalid characters.
+	ErrSectionInvalidChar = errors.New("section name contains invalid character")
 )
 
 // IsFileExists checks if a file exists and is not a directory.
@@ -29,6 +46,54 @@ func TouchFile(filename string) error {
 	if err != nil {
 		return fmt.Errorf("failed to create file: %w", err)
 	}
+	return nil
+}
+
+// ValidateKey validates a key name for INI files.
+// Returns an error if the key is empty or contains invalid characters.
+func ValidateKey(key string) error {
+	if key == "" {
+		return ErrEmptyKey
+	}
+
+	// Check for leading/trailing whitespace
+	if strings.TrimSpace(key) != key {
+		return fmt.Errorf("%w: %q", ErrKeyWhitespace, key)
+	}
+
+	// Check for invalid characters that have special meaning in INI format
+	invalidChars := []string{"=", "[", "]", ";", "#"}
+	for _, char := range invalidChars {
+		if strings.Contains(key, char) {
+			return fmt.Errorf("%w %q in: %q", ErrKeyInvalidChar, char, key)
+		}
+	}
+
+	return nil
+}
+
+// ValidateSection validates a section name for INI files.
+// Returns an error if the section contains invalid characters.
+// Empty section is allowed as it represents the default section.
+func ValidateSection(section string) error {
+	// Empty section is valid (default section)
+	if section == "" {
+		return nil
+	}
+
+	// Check for leading/trailing whitespace
+	if strings.TrimSpace(section) != section {
+		return fmt.Errorf("%w: %q", ErrSectionWhitespace, section)
+	}
+
+	// Check for invalid characters
+	invalidChars := []string{"[", "]", "=", ";", "#"}
+	for _, char := range invalidChars {
+		if strings.Contains(section, char) {
+			return fmt.Errorf("%w %q in: %q", ErrSectionInvalidChar, char, section)
+		}
+	}
+
 	return nil
 }
 
