@@ -20,7 +20,21 @@ var createIniFileIfAbsent bool
 var rootCmd = &cobra.Command{
 	Use:   "gini",
 	Short: "Tool to get/set key from an ini file.",
-	Long:  `Tool to get/set key from an ini file.`,
+	Long: `gini is a CLI utility for performing basic operations on INI configuration files.
+
+It provides commands to read, write, update, and delete keys and sections in INI files.
+All operations use atomic writes to prevent file corruption during updates.
+
+Common flags:
+  -i, --i string    Path to the INI file (required for all commands)
+  -s, --s string    Section name (use empty string for default section)
+  -k, --k string    Key name within the section
+
+Examples:
+  gini get -i config.ini -s database -k host
+  gini set -i config.ini -s database -k port -v 5432
+  gini del -i config.ini -s cache -k ttl
+  gini delsection -i config.ini -s deprecated`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },

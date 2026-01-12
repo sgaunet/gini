@@ -13,7 +13,28 @@ import (
 var delCmd = &cobra.Command{
 	Use:   "del",
 	Short: "delete a key from an ini file",
-	Long:  `delete a key from an ini file`,
+	Long: `Delete a specific key from a section in an INI file.
+
+The del command removes the specified key from the given section. If the key doesn't exist,
+the operation completes successfully without error. The file is saved using atomic writes
+to prevent corruption.
+
+Note: To delete an entire section with all its keys, use the 'delsection' command instead.
+
+Required flags:
+  -i    Path to the INI file to modify
+  -k    Key name to delete
+  -s    Section name (use empty string "" for the default section)
+
+Examples:
+  # Delete a key from a named section
+  gini del -i config.ini -s cache -k ttl
+
+  # Delete a key from the default section
+  gini del -i config.ini -s "" -k deprecated_option
+
+  # Remove a database password
+  gini del -i config.ini -s database -k password`,
 	RunE: func(_ *cobra.Command, _ []string) error {
 		if iniFile == "" {
 			return errNoIniFile
