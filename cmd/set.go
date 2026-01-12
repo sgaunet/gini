@@ -14,7 +14,30 @@ var value string
 var setCmd = &cobra.Command{
 	Use:   "set",
 	Short: "add/update key/value",
-	Long:  `add/update key/value in the desired section (can be empty)`,
+	Long: `Add a new key or update an existing key's value in an INI file.
+
+The set command creates or updates a key within the specified section. If the key already
+exists, its value is updated. If the key doesn't exist, it is created. The file is saved
+using atomic writes to prevent corruption.
+
+Required flags:
+  -i    Path to the INI file to update
+  -k    Key name to set
+  -s    Section name (use empty string "" for the default section)
+  -v    Value to set for the key
+
+Optional flags:
+  -c    Create the INI file if it doesn't exist (default: false)
+
+Examples:
+  # Set a key in a named section
+  gini set -i config.ini -s database -k host -v localhost
+
+  # Set a key in the default section
+  gini set -i config.ini -s "" -k version -v 1.0.0
+
+  # Create file if it doesn't exist
+  gini set -i newconfig.ini -s app -k name -v myapp -c`,
 	RunE: func(_ *cobra.Command, _ []string) error {
 		if iniFile == "" {
 			return errNoIniFile
