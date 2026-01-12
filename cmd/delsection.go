@@ -26,9 +26,6 @@ var delSectionCmd = &cobra.Command{
 			return fmt.Errorf("fail to load file: %w", err)
 		}
 
-		// for _, k := range cfg.Section(section).Keys() {
-		// 	cfg.Section(section).DeleteKey(k.Name())
-		// }
 		cfg.DeleteSection(section)
 		err = tools.AtomicSave(cfg, iniFile)
 		if err != nil {
