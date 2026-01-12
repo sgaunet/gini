@@ -60,7 +60,7 @@ Examples:
 		}
 
 		if strict {
-			return fmt.Errorf("key '%s' not found in section '%s'", key, section)
+			return fmt.Errorf("key '%s' in section '%s': %w", key, section, errKeyNotFound)
 		}
 		return nil
 	},

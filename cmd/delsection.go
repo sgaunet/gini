@@ -55,7 +55,7 @@ Examples:
 		}
 
 		if strict && !cfg.HasSection(section) {
-			return fmt.Errorf("section '%s' not found", section)
+			return fmt.Errorf("section '%s': %w", section, errSectionNotFound)
 		}
 
 		cfg.DeleteSection(section)

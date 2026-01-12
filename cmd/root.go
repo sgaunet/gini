@@ -8,7 +8,9 @@ import (
 )
 
 var (
-	errNoIniFile = errors.New("specify inifile")
+	errNoIniFile      = errors.New("specify inifile")
+	errKeyNotFound    = errors.New("key not found")
+	errSectionNotFound = errors.New("section not found")
 )
 
 var iniFile string

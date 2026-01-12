@@ -58,7 +58,7 @@ Examples:
 		}
 
 		if strict && !cfg.Section(section).HasKey(key) {
-			return fmt.Errorf("key '%s' not found in section '%s'", key, section)
+			return fmt.Errorf("key '%s' in section '%s': %w", key, section, errKeyNotFound)
 		}
 
 		cfg.Section(section).DeleteKey(key)
