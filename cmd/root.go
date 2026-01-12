@@ -58,12 +58,26 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&section, "s", "", "section of ini file (can be empty)")
 	rootCmd.PersistentFlags().BoolVar(&strict, "strict", false, "fail with error if key/section doesn't exist")
 
+	// get command - requires: i, k (s can be empty for default section)
 	rootCmd.AddCommand(getCmd)
+	_ = getCmd.MarkPersistentFlagRequired("i")
+	_ = getCmd.MarkPersistentFlagRequired("k")
 
+	// set command - requires: i, k, v (s can be empty for default section)
 	setCmd.Flags().StringVar(&value, "v", "", "value to set")
 	setCmd.Flags().BoolVar(&createIniFileIfAbsent, "c", false, "create file if no present")
 	rootCmd.AddCommand(setCmd)
-	rootCmd.AddCommand(delCmd)
+	_ = setCmd.MarkPersistentFlagRequired("i")
+	_ = setCmd.MarkPersistentFlagRequired("k")
+	_ = setCmd.MarkFlagRequired("v")
 
+	// del command - requires: i, k (s can be empty for default section)
+	rootCmd.AddCommand(delCmd)
+	_ = delCmd.MarkPersistentFlagRequired("i")
+	_ = delCmd.MarkPersistentFlagRequired("k")
+
+	// delsection command - requires: i, s (s cannot be empty for this command)
 	rootCmd.AddCommand(delSectionCmd)
+	_ = delSectionCmd.MarkPersistentFlagRequired("i")
+	_ = delSectionCmd.MarkPersistentFlagRequired("s")
 }
