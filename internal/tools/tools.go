@@ -27,11 +27,19 @@ var (
 )
 
 // IsFileExists checks if a file exists and is not a directory.
+// Returns false if the file doesn't exist, is a directory, or if there's an error accessing it.
 func IsFileExists(file string) bool {
 	info, err := os.Stat(file)
 	if err != nil {
+		// If file doesn't exist, return false
+		if os.IsNotExist(err) {
+			return false
+		}
+		// For any other error (permission denied, etc.), treat as non-existent
+		// to avoid unexpected behavior in callers
 		return false
 	}
+	// File exists but is a directory - return false
 	return !info.IsDir()
 }
 
