@@ -15,6 +15,7 @@ var iniFile string
 var section string
 var key string
 var createIniFileIfAbsent bool
+var strict bool
 
 // rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
@@ -53,6 +54,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&iniFile, "i", "", "INI file to read/update")
 	rootCmd.PersistentFlags().StringVar(&key, "k", "", "key to read or update")
 	rootCmd.PersistentFlags().StringVar(&section, "s", "", "section of ini file (can be empty)")
+	rootCmd.PersistentFlags().BoolVar(&strict, "strict", false, "fail with error if key/section doesn't exist")
 
 	rootCmd.AddCommand(getCmd)
 
