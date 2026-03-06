@@ -24,10 +24,8 @@ Required flags:
   -s    Section name (use empty string "" for the default section)
 
 Optional flags:
-  --strict    Fail with error if key doesn't exist
-
-Examples:
-  # Get a key from a named section
+  --strict    Fail with error if key doesn't exist`,
+	Example: `  # Get a key from a named section
   gini get -i config.ini -s database -k host
 
   # Get a key from the default section (empty string)

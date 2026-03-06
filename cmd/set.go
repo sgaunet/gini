@@ -27,10 +27,8 @@ Required flags:
   -v    Value to set for the key
 
 Optional flags:
-  -c    Create the INI file if it doesn't exist (default: false)
-
-Examples:
-  # Set a key in a named section
+  -c    Create the INI file if it doesn't exist (default: false)`,
+	Example: `  # Set a key in a named section
   gini set -i config.ini -s database -k host -v localhost
 
   # Set a key in the default section

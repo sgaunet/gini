@@ -27,10 +27,8 @@ Required flags:
   -s    Section name to delete (cannot be empty for this command)
 
 Optional flags:
-  --strict    Fail with error if section doesn't exist
-
-Examples:
-  # Delete an entire section with all its keys
+  --strict    Fail with error if section doesn't exist`,
+	Example: `  # Delete an entire section with all its keys
   gini delsection -i config.ini -s deprecated
 
   # Remove a cache configuration section
