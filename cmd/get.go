@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/sgaunet/gini/internal/tools"
 	"github.com/spf13/cobra"
@@ -47,16 +48,20 @@ Optional flags:
 			return fmt.Errorf("invalid section: %w", err)
 		}
 
+		slog.Debug("loading INI file", "file", iniFile, "section", section, "key", key)
 		cfg, err := ini.Load(iniFile)
 		if err != nil {
 			return fmt.Errorf("fail to load file: %w", err)
 		}
 
 		if cfg.Section(section).HasKey(key) {
-			fmt.Println(cfg.Section(section).Key(key).String())
+			v := cfg.Section(section).Key(key).String()
+			slog.Debug("key found", "section", section, "key", key, "value", v)
+			fmt.Println(v)
 			return nil
 		}
 
+		slog.Debug("key not found", "section", section, "key", key)
 		if strict {
 			return fmt.Errorf("key '%s' in section '%s': %w", key, section, errKeyNotFound)
 		}

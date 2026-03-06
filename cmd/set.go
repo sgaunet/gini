@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/sgaunet/gini/internal/tools"
 	"github.com/spf13/cobra"
@@ -47,7 +48,9 @@ Optional flags:
 			return fmt.Errorf("invalid section: %w", err)
 		}
 
+		slog.Debug("setting key", "file", iniFile, "section", section, "key", key, "value", value)
 		if !tools.IsFileExists(iniFile) && createIniFileIfAbsent {
+			slog.Debug("creating INI file", "file", iniFile)
 			err := tools.TouchFile(iniFile)
 			if err != nil {
 				return fmt.Errorf("can't create file: %w", err)
@@ -57,12 +60,12 @@ Optional flags:
 		if err != nil {
 			return fmt.Errorf("fail to load file: %w", err)
 		}
-		// Classic read of values, default section can be represented as empty string
 		cfg.Section(section).Key(key).SetValue(value)
 		err = tools.AtomicSave(cfg, iniFile)
 		if err != nil {
 			return fmt.Errorf("fail to save file: %w", err)
 		}
+		slog.Debug("key set successfully", "file", iniFile, "section", section, "key", key)
 		return nil
 	},
 }

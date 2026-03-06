@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"errors"
+	"log/slog"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -21,6 +22,8 @@ var section string
 var key string
 var createIniFileIfAbsent bool
 var strict bool
+var debug bool
+var quiet bool
 
 // rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
@@ -35,15 +38,25 @@ Common flags:
   -i, --i string    Path to the INI file (required for all commands)
   -s, --s string    Section name (use empty string for default section)
   -k, --k string    Key name within the section
+  --debug           Enable debug logging (outputs to stderr)
+  --quiet           Suppress non-error output
 
 Examples:
   gini get -i config.ini -s database -k host
   gini set -i config.ini -s database -k port -v 5432
   gini del -i config.ini -s cache -k ttl
   gini delsection -i config.ini -s deprecated`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	PersistentPreRunE: func(_ *cobra.Command, _ []string) error {
+		level := slog.LevelInfo
+		if debug {
+			level = slog.LevelDebug
+		}
+		if quiet {
+			level = slog.LevelError
+		}
+		slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: level})))
+		return nil
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -60,6 +73,8 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&key, "k", "", "key to read or update")
 	rootCmd.PersistentFlags().StringVar(&section, "s", "", "section of ini file (can be empty)")
 	rootCmd.PersistentFlags().BoolVar(&strict, "strict", false, "fail with error if key/section doesn't exist")
+	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "enable debug logging")
+	rootCmd.PersistentFlags().BoolVar(&quiet, "quiet", false, "suppress non-error output")
 
 	// get command - requires: i, k (s can be empty for default section)
 	rootCmd.AddCommand(getCmd)
