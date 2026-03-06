@@ -27,10 +27,8 @@ Required flags:
   -s    Section name (use empty string "" for the default section)
 
 Optional flags:
-  --strict    Fail with error if key doesn't exist
-
-Examples:
-  # Delete a key from a named section
+  --strict    Fail with error if key doesn't exist`,
+	Example: `  # Delete a key from a named section
   gini del -i config.ini -s cache -k ttl
 
   # Delete a key from the default section
