@@ -1,37 +1,64 @@
 # https://taskfile.dev
 version: '3'
+includes:
+  dev: ./Taskfile_dev.yml
+
 vars:
   BINFILE: gini
 
 tasks:
   default:
+    desc: "List tasks"
+    preconditions:
+      - test -f .git/hooks/pre-commit
     cmds:
       - task -a
 
-  build:
+  check-before-commit:
+    desc: "Run checks before committing"
+    preconditions:
+      - test -f .git/hooks/pre-commit
+    deps:
+      - test
+      - snapshot
     cmds:
-      - CGO_ENABLED=0 go build .
+      - task: lint
 
   lint:
+    desc: "Run golangci-lint"
     cmds:
-      - golangci-lint run --timeout 5m
+      - golangci-lint run
 
-  snapshot:
+  test:
+    desc: "Run unit tests with race detection"
     cmds:
-      - GITLAB_TOKEN="" goreleaser --clean --snapshot
-    
-  release:
-    cmds:
-      - GITLAB_TOKEN="" goreleaser --clean --skip validate
+      - go test -count=2 -race ./...
 
-  godoc:
+  build:
+    desc: "Build binary"
     cmds:
+      - CGO_ENABLED=0 go build -o gini .
+
+  image:
+    desc: "Build and push Docker image"
+    deps:
+      - build
+    cmds:
+      - docker build --no-cache --build-arg VERSION=development . -t ghcr.io/sgaunet/gini:latest
+      - docker push ghcr.io/sgaunet/gini:latest
+
+  doc:
+    desc: "Start godoc documentation server"
+    cmds:
+      - echo http://localhost:6060
       - godoc -http=:6060
 
-  tests:
-    dir: tests
+  snapshot:
+    desc: "Create snapshot release with goreleaser"
     cmds:
-      - venom run testsuite.yml --output-dir="log" --stop-on-failure
-      - venom run delsection.yml --output-dir="log" --stop-on-failure
+      - GITLAB_TOKEN="" goreleaser --clean --snapshot
 
-    
+  release:
+    desc: "Create production release with goreleaser"
+    cmds:
+      - GITLAB_TOKEN="" goreleaser --clean
