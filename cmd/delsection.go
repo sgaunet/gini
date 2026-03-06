@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/sgaunet/gini/internal/tools"
 	"github.com/spf13/cobra"
@@ -47,6 +48,7 @@ Optional flags:
 			return fmt.Errorf("invalid section: %w", err)
 		}
 
+		slog.Debug("deleting section", "file", iniFile, "section", section)
 		cfg, err := ini.Load(iniFile)
 		if err != nil {
 			return fmt.Errorf("fail to load file: %w", err)
@@ -61,6 +63,7 @@ Optional flags:
 		if err != nil {
 			return fmt.Errorf("fail to save file: %w", err)
 		}
+		slog.Debug("section deleted successfully", "file", iniFile, "section", section)
 		return nil
 	},
 }
