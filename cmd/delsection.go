@@ -24,22 +24,22 @@ Note: To delete only a specific key within a section, use the 'del' command inst
 Warning: This operation cannot be undone. The entire section will be permanently removed.
 
 Required flags:
-  -i    Path to the INI file to modify
-  -s    Section name to delete (cannot be empty for this command)
+  -f, --file       Path to the INI file to modify
+  -s, --section    Section name to delete (cannot be empty for this command)
 
 Optional flags:
   --strict    Fail with error if section doesn't exist`,
 	Example: `  # Delete an entire section with all its keys
-  gini delsection -i config.ini -s deprecated
+  gini delsection -f config.ini -s deprecated
 
   # Remove a cache configuration section
-  gini delsection -i config.ini -s cache
+  gini delsection -f config.ini -s cache
 
   # Fail if section doesn't exist (strict mode)
-  gini delsection --strict -i config.ini -s test_settings
+  gini delsection --strict -f config.ini -s test_settings
 
   # Clean up old test configuration
-  gini delsection -i config.ini -s test_settings`,
+  gini delsection -f config.ini -s test_settings`,
 	RunE: func(_ *cobra.Command, _ []string) error {
 		if iniFile == "" {
 			return errNoIniFile

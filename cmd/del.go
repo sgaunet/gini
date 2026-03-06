@@ -22,23 +22,23 @@ an error when the key doesn't exist. The file is saved using atomic writes to pr
 Note: To delete an entire section with all its keys, use the 'delsection' command instead.
 
 Required flags:
-  -i    Path to the INI file to modify
-  -k    Key name to delete
-  -s    Section name (use empty string "" for the default section)
+  -f, --file       Path to the INI file to modify
+  -k, --key        Key name to delete
+  -s, --section    Section name (use empty string "" for the default section)
 
 Optional flags:
   --strict    Fail with error if key doesn't exist`,
 	Example: `  # Delete a key from a named section
-  gini del -i config.ini -s cache -k ttl
+  gini del -f config.ini -s cache -k ttl
 
   # Delete a key from the default section
-  gini del -i config.ini -s "" -k deprecated_option
+  gini del -f config.ini -s "" -k deprecated_option
 
   # Fail if key doesn't exist (strict mode)
-  gini del --strict -i config.ini -s database -k password
+  gini del --strict -f config.ini -s database -k password
 
   # Remove a database password
-  gini del -i config.ini -s database -k password`,
+  gini del -f config.ini -s database -k password`,
 	RunE: func(_ *cobra.Command, _ []string) error {
 		if iniFile == "" {
 			return errNoIniFile
