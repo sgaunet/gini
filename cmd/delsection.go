@@ -49,6 +49,12 @@ Optional flags:
 		}
 
 		slog.Debug("deleting section", "file", iniFile, "section", section)
+		lock, err := tools.LockFile(iniFile, tools.ExclusiveLock)
+		if err != nil {
+			return fmt.Errorf("failed to lock file: %w", err)
+		}
+		defer func() { _ = lock.Unlock() }()
+
 		cfg, err := ini.Load(iniFile)
 		if err != nil {
 			return fmt.Errorf("fail to load file: %w", err)

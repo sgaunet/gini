@@ -2,3 +2,4 @@
 /dist
 log
 /gini
+*.ini.lock
