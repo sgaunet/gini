@@ -1,3 +1,6 @@
+// Package cmd implements the CLI commands for gini, a tool for reading and
+// writing INI configuration files. It uses the Cobra framework and provides
+// get, set, del, and delsection subcommands.
 package cmd
 
 import (
