@@ -1,6 +1,4 @@
-/*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-*/
+// gini is a CLI utility for performing basic operations on INI configuration files.
 package main
 
 import "github.com/sgaunet/gini/cmd"

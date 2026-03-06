@@ -1,4 +1,3 @@
-// Package cmd contains all CLI commands for the gini application.
 package cmd
 
 import (
