@@ -29,7 +29,7 @@ testcases:
   - type: exec
     script: |
       cd {{.venom.testsuite.workdir}}/..
-      go run . --i tests/{{.testfile}} delsection
+      go run . -f tests/{{.testfile}} delsection
     # info: "result.systemout is {{.result.systemout}}"
     assertions:
     - result.code ShouldEqual 0
@@ -40,7 +40,7 @@ testcases:
   - type: exec
     script: |
       cd {{.venom.testsuite.workdir}}/..
-      go run . --i tests/{{.testfile}} delsection --s section
+      go run . -f tests/{{.testfile}} delsection -s section
     # info: "result.systemout is {{.result.systemout}}"
     assertions:
     - result.code ShouldEqual 0

@@ -35,17 +35,17 @@ It provides commands to read, write, update, and delete keys and sections in INI
 All operations use atomic writes to prevent file corruption during updates.
 
 Common flags:
-  -i, --i string    Path to the INI file (required for all commands)
-  -s, --s string    Section name (use empty string for default section)
-  -k, --k string    Key name within the section
-  --debug           Enable debug logging (outputs to stderr)
-  --quiet           Suppress non-error output
+  -f, --file string      Path to the INI file (required for all commands)
+  -s, --section string   Section name (use empty string for default section)
+  -k, --key string       Key name within the section
+  --debug                Enable debug logging (outputs to stderr)
+  --quiet                Suppress non-error output
 
 Examples:
-  gini get -i config.ini -s database -k host
-  gini set -i config.ini -s database -k port -v 5432
-  gini del -i config.ini -s cache -k ttl
-  gini delsection -i config.ini -s deprecated`,
+  gini get -f config.ini -s database -k host
+  gini set -f config.ini -s database -k port -v 5432
+  gini del -f config.ini -s cache -k ttl
+  gini delsection -f config.ini -s deprecated`,
 	PersistentPreRunE: func(_ *cobra.Command, _ []string) error {
 		level := slog.LevelInfo
 		if debug {
@@ -69,33 +69,33 @@ func Execute() {
 
 func init() {
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
-	rootCmd.PersistentFlags().StringVar(&iniFile, "i", "", "INI file to read/update")
-	rootCmd.PersistentFlags().StringVar(&key, "k", "", "key to read or update")
-	rootCmd.PersistentFlags().StringVar(&section, "s", "", "section of ini file (can be empty)")
+	rootCmd.PersistentFlags().StringVarP(&iniFile, "file", "f", "", "INI file to read/update")
+	rootCmd.PersistentFlags().StringVarP(&key, "key", "k", "", "key to read or update")
+	rootCmd.PersistentFlags().StringVarP(&section, "section", "s", "", "section of ini file (can be empty)")
 	rootCmd.PersistentFlags().BoolVar(&strict, "strict", false, "fail with error if key/section doesn't exist")
 	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "enable debug logging")
 	rootCmd.PersistentFlags().BoolVar(&quiet, "quiet", false, "suppress non-error output")
 
-	// get command - requires: i, k (s can be empty for default section)
+	// get command - requires: file, key (section can be empty for default section)
 	rootCmd.AddCommand(getCmd)
-	_ = getCmd.MarkPersistentFlagRequired("i")
-	_ = getCmd.MarkPersistentFlagRequired("k")
+	_ = getCmd.MarkPersistentFlagRequired("file")
+	_ = getCmd.MarkPersistentFlagRequired("key")
 
-	// set command - requires: i, k, v (s can be empty for default section)
-	setCmd.Flags().StringVar(&value, "v", "", "value to set")
-	setCmd.Flags().BoolVar(&createIniFileIfAbsent, "c", false, "create file if no present")
+	// set command - requires: file, key, value (section can be empty for default section)
+	setCmd.Flags().StringVarP(&value, "value", "v", "", "value to set")
+	setCmd.Flags().BoolVarP(&createIniFileIfAbsent, "create", "c", false, "create file if not present")
 	rootCmd.AddCommand(setCmd)
-	_ = setCmd.MarkPersistentFlagRequired("i")
-	_ = setCmd.MarkPersistentFlagRequired("k")
-	_ = setCmd.MarkFlagRequired("v")
+	_ = setCmd.MarkPersistentFlagRequired("file")
+	_ = setCmd.MarkPersistentFlagRequired("key")
+	_ = setCmd.MarkFlagRequired("value")
 
-	// del command - requires: i, k (s can be empty for default section)
+	// del command - requires: file, key (section can be empty for default section)
 	rootCmd.AddCommand(delCmd)
-	_ = delCmd.MarkPersistentFlagRequired("i")
-	_ = delCmd.MarkPersistentFlagRequired("k")
+	_ = delCmd.MarkPersistentFlagRequired("file")
+	_ = delCmd.MarkPersistentFlagRequired("key")
 
-	// delsection command - requires: i, s (s cannot be empty for this command)
+	// delsection command - requires: file, section (section cannot be empty for this command)
 	rootCmd.AddCommand(delSectionCmd)
-	_ = delSectionCmd.MarkPersistentFlagRequired("i")
-	_ = delSectionCmd.MarkPersistentFlagRequired("s")
+	_ = delSectionCmd.MarkPersistentFlagRequired("file")
+	_ = delSectionCmd.MarkPersistentFlagRequired("section")
 }

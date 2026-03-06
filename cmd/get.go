@@ -20,23 +20,23 @@ By default, if the key does not exist, the command exits successfully with no ou
 Use --strict to return an error when the key doesn't exist.
 
 Required flags:
-  -i    Path to the INI file to read
-  -k    Key name to retrieve
-  -s    Section name (use empty string "" for the default section)
+  -f, --file       Path to the INI file to read
+  -k, --key        Key name to retrieve
+  -s, --section    Section name (use empty string "" for the default section)
 
 Optional flags:
   --strict    Fail with error if key doesn't exist`,
 	Example: `  # Get a key from a named section
-  gini get -i config.ini -s database -k host
+  gini get -f config.ini -s database -k host
 
   # Get a key from the default section (empty string)
-  gini get -i config.ini -s "" -k app_name
+  gini get -f config.ini -s "" -k app_name
 
   # Fail if key doesn't exist (strict mode)
-  gini get --strict -i config.ini -s database -k host
+  gini get --strict -f config.ini -s database -k host
 
   # Use in scripts with output capture
-  DB_HOST=$(gini get -i config.ini -s database -k host)`,
+  DB_HOST=$(gini get -f config.ini -s database -k host)`,
 	RunE: func(_ *cobra.Command, _ []string) error {
 		if iniFile == "" {
 			return errNoIniFile

@@ -9,11 +9,11 @@ testcases:
   steps:
   - type: exec
     script: cd {{.venom.testsuite.workdir}} && rm -f test2-*.ini || exit 0
-    
+
 - name: get value of key (no section)
   steps:
   - type: exec
-    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/test.ini get --k key
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . -f tests/test.ini get -k key
     info: "result.systemout is {{.result.systemout}}"
     assertions:
     - result.code ShouldEqual 0
@@ -22,7 +22,7 @@ testcases:
 - name: get value of key (section section)
   steps:
   - type: exec
-    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/test.ini get --k key2 --s section
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . -f tests/test.ini get -k key2 -s section
     info: "result.systemout is {{.result.systemout}}"
     assertions:
     - result.code ShouldEqual 0
@@ -31,7 +31,7 @@ testcases:
 - name: try to set a key/value to an absent file
   steps:
   - type: exec
-    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/{{.testfile}} set --k key2 --s section --v ok
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . -f tests/{{.testfile}} set -k key2 -s section -v ok
     info: "result.systemout is {{.result.systemout}}"
     assertions:
     - result.code ShouldEqual 1
@@ -39,7 +39,7 @@ testcases:
 - name: set a key/value to an absent file
   steps:
   - type: exec
-    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/{{.testfile}} set --k key2 --s section --v value2 --c
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . -f tests/{{.testfile}} set -k key2 -s section -v value2 -c
     # info: "result.systemout is {{.result.systemout}}"
     assertions:
     - result.code ShouldEqual 0
@@ -47,7 +47,7 @@ testcases:
 - name: set a key/value
   steps:
   - type: exec
-    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/{{.testfile}} set --k key --v value
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . -f tests/{{.testfile}} set -k key -v value
     # info: "result.systemout is {{.result.systemout}}"
     assertions:
     - result.code ShouldEqual 0
@@ -63,7 +63,7 @@ testcases:
 - name: delete a key/value
   steps:
   - type: exec
-    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/{{.testfile}} del --k key
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . -f tests/{{.testfile}} del -k key
     # info: "result.systemout is {{.result.systemout}}"
     assertions:
     - result.code ShouldEqual 0
@@ -71,7 +71,7 @@ testcases:
 - name: get value of key not present
   steps:
   - type: exec
-    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/{{.testfile}} get --k key
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . -f tests/{{.testfile}} get -k key
     info: "result.systemout is {{.result.systemout}}"
     assertions:
     - result.code ShouldEqual 0
@@ -80,7 +80,7 @@ testcases:
 - name: delete a key/value
   steps:
   - type: exec
-    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/{{.testfile}} del --k key2 --s section
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . -f tests/{{.testfile}} del -k key2 -s section
     # info: "result.systemout is {{.result.systemout}}"
     assertions:
     - result.code ShouldEqual 0
@@ -88,7 +88,7 @@ testcases:
 - name: get value of key not present
   steps:
   - type: exec
-    script: cd {{.venom.testsuite.workdir}}/.. && go run . --i tests/{{.testfile}} get --k key2 --s section
+    script: cd {{.venom.testsuite.workdir}}/.. && go run . -f tests/{{.testfile}} get -k key2 -s section
     info: "result.systemout is {{.result.systemout}}"
     assertions:
     - result.code ShouldEqual 0
