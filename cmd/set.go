@@ -49,6 +49,12 @@ Optional flags:
 		}
 
 		slog.Debug("setting key", "file", iniFile, "section", section, "key", key, "value", value)
+		lock, err := tools.LockFile(iniFile, tools.ExclusiveLock)
+		if err != nil {
+			return fmt.Errorf("failed to lock file: %w", err)
+		}
+		defer func() { _ = lock.Unlock() }()
+
 		if !tools.IsFileExists(iniFile) && createIniFileIfAbsent {
 			slog.Debug("creating INI file", "file", iniFile)
 			err := tools.TouchFile(iniFile)
