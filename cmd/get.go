@@ -38,24 +38,24 @@ Optional flags:
   # Use in scripts with output capture
   DB_HOST=$(gini get -f config.ini -s database -k host)`,
 	RunE: func(_ *cobra.Command, _ []string) error {
-		slog.Debug("loading INI file", "file", iniFile, "section", section, "key", key)
+		slog.Debug("loading INI file", "file", cfg.File, "section", cfg.Section, "key", cfg.Key)
 
-		cfg, lock, err := inifile.ValidateAndLoad(iniFile, section, key, tools.SharedLock)
+		ini, lock, err := inifile.ValidateAndLoad(cfg.File, cfg.Section, cfg.Key, tools.SharedLock)
 		if err != nil {
 			return fmt.Errorf("get: %w", err)
 		}
 		defer func() { _ = lock.Unlock() }()
 
-		if cfg.Section(section).HasKey(key) {
-			v := cfg.Section(section).Key(key).String()
-			slog.Debug("key found", "section", section, "key", key, "value", v)
+		if ini.Section(cfg.Section).HasKey(cfg.Key) {
+			v := ini.Section(cfg.Section).Key(cfg.Key).String()
+			slog.Debug("key found", "section", cfg.Section, "key", cfg.Key, "value", v)
 			fmt.Println(v)
 			return nil
 		}
 
-		slog.Debug("key not found", "section", section, "key", key)
-		if strict {
-			return fmt.Errorf("key '%s' in section '%s': %w", key, section, errKeyNotFound)
+		slog.Debug("key not found", "section", cfg.Section, "key", cfg.Key)
+		if cfg.Strict {
+			return fmt.Errorf("key '%s' in section '%s': %w", cfg.Key, cfg.Section, errKeyNotFound)
 		}
 		return nil
 	},

@@ -9,8 +9,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var value string
-
 // setCmd represents the set command.
 var setCmd = &cobra.Command{
 	Use:   "set",
@@ -38,26 +36,26 @@ Optional flags:
   # Create file if it doesn't exist
   gini set -f newconfig.ini -s app -k name -v myapp -c`,
 	RunE: func(_ *cobra.Command, _ []string) error {
-		slog.Debug("setting key", "file", iniFile, "section", section, "key", key, "value", value)
+		slog.Debug("setting key", "file", cfg.File, "section", cfg.Section, "key", cfg.Key, "value", cfg.Value)
 
-		if createIniFileIfAbsent && !tools.IsFileExists(iniFile) {
-			slog.Debug("creating INI file", "file", iniFile)
-			if err := tools.TouchFile(iniFile); err != nil {
+		if cfg.Create && !tools.IsFileExists(cfg.File) {
+			slog.Debug("creating INI file", "file", cfg.File)
+			if err := tools.TouchFile(cfg.File); err != nil {
 				return fmt.Errorf("can't create file: %w", err)
 			}
 		}
 
-		cfg, lock, err := inifile.ValidateAndLoad(iniFile, section, key, tools.ExclusiveLock)
+		ini, lock, err := inifile.ValidateAndLoad(cfg.File, cfg.Section, cfg.Key, tools.ExclusiveLock)
 		if err != nil {
 			return fmt.Errorf("set: %w", err)
 		}
 		defer func() { _ = lock.Unlock() }()
 
-		cfg.Section(section).Key(key).SetValue(value)
-		if err := inifile.SaveConfig(cfg, iniFile); err != nil {
+		ini.Section(cfg.Section).Key(cfg.Key).SetValue(cfg.Value)
+		if err := inifile.SaveConfig(ini, cfg.File); err != nil {
 			return fmt.Errorf("set: %w", err)
 		}
-		slog.Debug("key set successfully", "file", iniFile, "section", section, "key", key)
+		slog.Debug("key set successfully", "file", cfg.File, "section", cfg.Section, "key", cfg.Key)
 		return nil
 	},
 }

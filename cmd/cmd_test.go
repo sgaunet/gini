@@ -11,15 +11,8 @@ import (
 func executeCommand(t *testing.T, args ...string) (string, error) {
 	t.Helper()
 
-	// Reset package-level vars to defaults before each test
-	iniFile = ""
-	section = ""
-	key = ""
-	value = ""
-	createIniFileIfAbsent = false
-	strict = false
-	debug = false
-	quiet = false
+	// Reset config to defaults before each test
+	cfg = Config{}
 
 	// Capture stdout since commands use fmt.Println
 	oldStdout := os.Stdout

@@ -41,23 +41,23 @@ Optional flags:
   # Clean up old test configuration
   gini delsection -f config.ini -s test_settings`,
 	RunE: func(_ *cobra.Command, _ []string) error {
-		slog.Debug("deleting section", "file", iniFile, "section", section)
+		slog.Debug("deleting section", "file", cfg.File, "section", cfg.Section)
 
-		cfg, lock, err := inifile.ValidateSectionAndLoad(iniFile, section, tools.ExclusiveLock)
+		ini, lock, err := inifile.ValidateSectionAndLoad(cfg.File, cfg.Section, tools.ExclusiveLock)
 		if err != nil {
 			return fmt.Errorf("delsection: %w", err)
 		}
 		defer func() { _ = lock.Unlock() }()
 
-		if strict && !cfg.HasSection(section) {
-			return fmt.Errorf("section '%s': %w", section, errSectionNotFound)
+		if cfg.Strict && !ini.HasSection(cfg.Section) {
+			return fmt.Errorf("section '%s': %w", cfg.Section, errSectionNotFound)
 		}
 
-		cfg.DeleteSection(section)
-		if err := inifile.SaveConfig(cfg, iniFile); err != nil {
+		ini.DeleteSection(cfg.Section)
+		if err := inifile.SaveConfig(ini, cfg.File); err != nil {
 			return fmt.Errorf("delsection: %w", err)
 		}
-		slog.Debug("section deleted successfully", "file", iniFile, "section", section)
+		slog.Debug("section deleted successfully", "file", cfg.File, "section", cfg.Section)
 		return nil
 	},
 }

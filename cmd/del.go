@@ -40,23 +40,23 @@ Optional flags:
   # Remove a database password
   gini del -f config.ini -s database -k password`,
 	RunE: func(_ *cobra.Command, _ []string) error {
-		slog.Debug("deleting key", "file", iniFile, "section", section, "key", key)
+		slog.Debug("deleting key", "file", cfg.File, "section", cfg.Section, "key", cfg.Key)
 
-		cfg, lock, err := inifile.ValidateAndLoad(iniFile, section, key, tools.ExclusiveLock)
+		ini, lock, err := inifile.ValidateAndLoad(cfg.File, cfg.Section, cfg.Key, tools.ExclusiveLock)
 		if err != nil {
 			return fmt.Errorf("del: %w", err)
 		}
 		defer func() { _ = lock.Unlock() }()
 
-		if strict && !cfg.Section(section).HasKey(key) {
-			return fmt.Errorf("key '%s' in section '%s': %w", key, section, errKeyNotFound)
+		if cfg.Strict && !ini.Section(cfg.Section).HasKey(cfg.Key) {
+			return fmt.Errorf("key '%s' in section '%s': %w", cfg.Key, cfg.Section, errKeyNotFound)
 		}
 
-		cfg.Section(section).DeleteKey(key)
-		if err := inifile.SaveConfig(cfg, iniFile); err != nil {
+		ini.Section(cfg.Section).DeleteKey(cfg.Key)
+		if err := inifile.SaveConfig(ini, cfg.File); err != nil {
 			return fmt.Errorf("del: %w", err)
 		}
-		slog.Debug("key deleted successfully", "file", iniFile, "section", section, "key", key)
+		slog.Debug("key deleted successfully", "file", cfg.File, "section", cfg.Section, "key", cfg.Key)
 		return nil
 	},
 }
