@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/sgaunet/gini/internal/inifile"
 	"github.com/sgaunet/gini/internal/tools"
 	"github.com/spf13/cobra"
-	"gopkg.in/ini.v1"
 )
 
 // delCmd represents the del command.
@@ -40,36 +40,21 @@ Optional flags:
   # Remove a database password
   gini del -f config.ini -s database -k password`,
 	RunE: func(_ *cobra.Command, _ []string) error {
-		if iniFile == "" {
-			return errNoIniFile
-		}
-		if err := tools.ValidateKey(key); err != nil {
-			return fmt.Errorf("invalid key: %w", err)
-		}
-		if err := tools.ValidateSection(section); err != nil {
-			return fmt.Errorf("invalid section: %w", err)
-		}
-
 		slog.Debug("deleting key", "file", iniFile, "section", section, "key", key)
-		lock, err := tools.LockFile(iniFile, tools.ExclusiveLock)
+
+		cfg, lock, err := inifile.ValidateAndLoad(iniFile, section, key, tools.ExclusiveLock)
 		if err != nil {
-			return fmt.Errorf("failed to lock file: %w", err)
+			return fmt.Errorf("del: %w", err)
 		}
 		defer func() { _ = lock.Unlock() }()
-
-		cfg, err := ini.Load(iniFile)
-		if err != nil {
-			return fmt.Errorf("fail to load file: %w", err)
-		}
 
 		if strict && !cfg.Section(section).HasKey(key) {
 			return fmt.Errorf("key '%s' in section '%s': %w", key, section, errKeyNotFound)
 		}
 
 		cfg.Section(section).DeleteKey(key)
-		err = tools.AtomicSave(cfg, iniFile)
-		if err != nil {
-			return fmt.Errorf("fail to save file: %w", err)
+		if err := inifile.SaveConfig(cfg, iniFile); err != nil {
+			return fmt.Errorf("del: %w", err)
 		}
 		slog.Debug("key deleted successfully", "file", iniFile, "section", section, "key", key)
 		return nil

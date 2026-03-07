@@ -12,8 +12,7 @@ import (
 )
 
 var (
-	errNoIniFile      = errors.New("specify inifile")
-	errKeyNotFound    = errors.New("key not found")
+	errKeyNotFound     = errors.New("key not found")
 	errSectionNotFound = errors.New("section not found")
 )
 

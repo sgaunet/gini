@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/sgaunet/gini/internal/inifile"
 	"github.com/sgaunet/gini/internal/tools"
 	"github.com/spf13/cobra"
-	"gopkg.in/ini.v1"
 )
 
 // getCmd represents the get command.
@@ -38,27 +38,13 @@ Optional flags:
   # Use in scripts with output capture
   DB_HOST=$(gini get -f config.ini -s database -k host)`,
 	RunE: func(_ *cobra.Command, _ []string) error {
-		if iniFile == "" {
-			return errNoIniFile
-		}
-		if err := tools.ValidateKey(key); err != nil {
-			return fmt.Errorf("invalid key: %w", err)
-		}
-		if err := tools.ValidateSection(section); err != nil {
-			return fmt.Errorf("invalid section: %w", err)
-		}
-
 		slog.Debug("loading INI file", "file", iniFile, "section", section, "key", key)
-		lock, err := tools.LockFile(iniFile, tools.SharedLock)
+
+		cfg, lock, err := inifile.ValidateAndLoad(iniFile, section, key, tools.SharedLock)
 		if err != nil {
-			return fmt.Errorf("failed to lock file: %w", err)
+			return fmt.Errorf("get: %w", err)
 		}
 		defer func() { _ = lock.Unlock() }()
-
-		cfg, err := ini.Load(iniFile)
-		if err != nil {
-			return fmt.Errorf("fail to load file: %w", err)
-		}
 
 		if cfg.Section(section).HasKey(key) {
 			v := cfg.Section(section).Key(key).String()
