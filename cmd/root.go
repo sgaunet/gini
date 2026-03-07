@@ -16,13 +16,19 @@ var (
 	errSectionNotFound = errors.New("section not found")
 )
 
-var iniFile string
-var section string
-var key string
-var createIniFileIfAbsent bool
-var strict bool
-var debug bool
-var quiet bool
+// Config holds all flag values shared across commands.
+type Config struct {
+	File    string
+	Section string
+	Key     string
+	Value   string
+	Create  bool
+	Strict  bool
+	Debug   bool
+	Quiet   bool
+}
+
+var cfg Config
 
 // rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
@@ -47,10 +53,10 @@ Examples:
   gini delsection -f config.ini -s deprecated`,
 	PersistentPreRunE: func(_ *cobra.Command, _ []string) error {
 		level := slog.LevelInfo
-		if debug {
+		if cfg.Debug {
 			level = slog.LevelDebug
 		}
-		if quiet {
+		if cfg.Quiet {
 			level = slog.LevelError
 		}
 		slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: level})))
@@ -68,12 +74,12 @@ func Execute() {
 
 func init() {
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
-	rootCmd.PersistentFlags().StringVarP(&iniFile, "file", "f", "", "INI file to read/update")
-	rootCmd.PersistentFlags().StringVarP(&key, "key", "k", "", "key to read or update")
-	rootCmd.PersistentFlags().StringVarP(&section, "section", "s", "", "section of ini file (can be empty)")
-	rootCmd.PersistentFlags().BoolVar(&strict, "strict", false, "fail with error if key/section doesn't exist")
-	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "enable debug logging")
-	rootCmd.PersistentFlags().BoolVar(&quiet, "quiet", false, "suppress non-error output")
+	rootCmd.PersistentFlags().StringVarP(&cfg.File, "file", "f", "", "INI file to read/update")
+	rootCmd.PersistentFlags().StringVarP(&cfg.Key, "key", "k", "", "key to read or update")
+	rootCmd.PersistentFlags().StringVarP(&cfg.Section, "section", "s", "", "section of ini file (can be empty)")
+	rootCmd.PersistentFlags().BoolVar(&cfg.Strict, "strict", false, "fail with error if key/section doesn't exist")
+	rootCmd.PersistentFlags().BoolVar(&cfg.Debug, "debug", false, "enable debug logging")
+	rootCmd.PersistentFlags().BoolVar(&cfg.Quiet, "quiet", false, "suppress non-error output")
 
 	// get command - requires: file, key (section can be empty for default section)
 	rootCmd.AddCommand(getCmd)
@@ -81,8 +87,8 @@ func init() {
 	_ = getCmd.MarkPersistentFlagRequired("key")
 
 	// set command - requires: file, key, value (section can be empty for default section)
-	setCmd.Flags().StringVarP(&value, "value", "v", "", "value to set")
-	setCmd.Flags().BoolVarP(&createIniFileIfAbsent, "create", "c", false, "create file if not present")
+	setCmd.Flags().StringVarP(&cfg.Value, "value", "v", "", "value to set")
+	setCmd.Flags().BoolVarP(&cfg.Create, "create", "c", false, "create file if not present")
 	rootCmd.AddCommand(setCmd)
 	_ = setCmd.MarkPersistentFlagRequired("file")
 	_ = setCmd.MarkPersistentFlagRequired("key")
