@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/sgaunet/gini/internal/inifile"
 	"github.com/sgaunet/gini/internal/tools"
 	"github.com/spf13/cobra"
-	"gopkg.in/ini.v1"
 )
 
 var value string
@@ -38,38 +38,24 @@ Optional flags:
   # Create file if it doesn't exist
   gini set -f newconfig.ini -s app -k name -v myapp -c`,
 	RunE: func(_ *cobra.Command, _ []string) error {
-		if iniFile == "" {
-			return errNoIniFile
-		}
-		if err := tools.ValidateKey(key); err != nil {
-			return fmt.Errorf("invalid key: %w", err)
-		}
-		if err := tools.ValidateSection(section); err != nil {
-			return fmt.Errorf("invalid section: %w", err)
-		}
-
 		slog.Debug("setting key", "file", iniFile, "section", section, "key", key, "value", value)
-		lock, err := tools.LockFile(iniFile, tools.ExclusiveLock)
-		if err != nil {
-			return fmt.Errorf("failed to lock file: %w", err)
-		}
-		defer func() { _ = lock.Unlock() }()
 
-		if !tools.IsFileExists(iniFile) && createIniFileIfAbsent {
+		if createIniFileIfAbsent && !tools.IsFileExists(iniFile) {
 			slog.Debug("creating INI file", "file", iniFile)
-			err := tools.TouchFile(iniFile)
-			if err != nil {
+			if err := tools.TouchFile(iniFile); err != nil {
 				return fmt.Errorf("can't create file: %w", err)
 			}
 		}
-		cfg, err := ini.Load(iniFile)
+
+		cfg, lock, err := inifile.ValidateAndLoad(iniFile, section, key, tools.ExclusiveLock)
 		if err != nil {
-			return fmt.Errorf("fail to load file: %w", err)
+			return fmt.Errorf("set: %w", err)
 		}
+		defer func() { _ = lock.Unlock() }()
+
 		cfg.Section(section).Key(key).SetValue(value)
-		err = tools.AtomicSave(cfg, iniFile)
-		if err != nil {
-			return fmt.Errorf("fail to save file: %w", err)
+		if err := inifile.SaveConfig(cfg, iniFile); err != nil {
+			return fmt.Errorf("set: %w", err)
 		}
 		slog.Debug("key set successfully", "file", iniFile, "section", section, "key", key)
 		return nil

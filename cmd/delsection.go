@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/sgaunet/gini/internal/inifile"
 	"github.com/sgaunet/gini/internal/tools"
 	"github.com/spf13/cobra"
-	"gopkg.in/ini.v1"
 )
 
 // delSectionCmd represents the delsection command.
@@ -41,33 +41,21 @@ Optional flags:
   # Clean up old test configuration
   gini delsection -f config.ini -s test_settings`,
 	RunE: func(_ *cobra.Command, _ []string) error {
-		if iniFile == "" {
-			return errNoIniFile
-		}
-		if err := tools.ValidateSection(section); err != nil {
-			return fmt.Errorf("invalid section: %w", err)
-		}
-
 		slog.Debug("deleting section", "file", iniFile, "section", section)
-		lock, err := tools.LockFile(iniFile, tools.ExclusiveLock)
+
+		cfg, lock, err := inifile.ValidateSectionAndLoad(iniFile, section, tools.ExclusiveLock)
 		if err != nil {
-			return fmt.Errorf("failed to lock file: %w", err)
+			return fmt.Errorf("delsection: %w", err)
 		}
 		defer func() { _ = lock.Unlock() }()
-
-		cfg, err := ini.Load(iniFile)
-		if err != nil {
-			return fmt.Errorf("fail to load file: %w", err)
-		}
 
 		if strict && !cfg.HasSection(section) {
 			return fmt.Errorf("section '%s': %w", section, errSectionNotFound)
 		}
 
 		cfg.DeleteSection(section)
-		err = tools.AtomicSave(cfg, iniFile)
-		if err != nil {
-			return fmt.Errorf("fail to save file: %w", err)
+		if err := inifile.SaveConfig(cfg, iniFile); err != nil {
+			return fmt.Errorf("delsection: %w", err)
 		}
 		slog.Debug("section deleted successfully", "file", iniFile, "section", section)
 		return nil
