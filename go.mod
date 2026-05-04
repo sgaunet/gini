@@ -4,7 +4,7 @@ go 1.24
 
 require (
 	github.com/spf13/cobra v1.10.2
-	gopkg.in/ini.v1 v1.67.1
+	gopkg.in/ini.v1 v1.67.2
 )
 
 require (
