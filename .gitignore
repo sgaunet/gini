@@ -3,3 +3,4 @@
 log
 /gini
 *.ini.lock
+/govulncheck.sarif
